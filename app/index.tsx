@@ -9,6 +9,8 @@ import { Alert, FlatList, Keyboard, Pressable, StyleSheet, Text, TextInput, Touc
 export default function Index() {
     const [tasks, setTasks] = useState<{ description: string; check: boolean }[]>([]);
     const [taskText, setTaskText] = useState("");
+    const [countTasksAbertas, setTasksAbertas] = useState(0);
+    const [countTasksFinalizadas, setTasksFinalizadas] = useState(0);
     const [countTask, setCountTask] = useState(0);
 
     function handleTaskAdd() {
@@ -34,6 +36,14 @@ export default function Index() {
         }
     }
 
+    function updateTasksStatus() {
+        const abertas = tasks.filter((t) => !t.check);
+        const finalizadas = tasks.filter((t) => t.check);
+
+        setTasksAbertas(abertas ? abertas.length : 0);
+        setTasksFinalizadas(finalizadas ? finalizadas.length : 0);
+    }
+
     function undoTarefa(texto: string){
         let newTasks = [...tasks]
         const index = newTasks.findIndex((t) => t.description === texto);
@@ -50,6 +60,7 @@ export default function Index() {
     useEffect(() => {
         let totalTasks = tasks.length;
         setCountTask(totalTasks);
+        updateTasksStatus();
     }, [tasks]);
 
     return (
@@ -67,10 +78,10 @@ export default function Index() {
                     <Feather name='plus-square' size={24} color='white' />
                 </TouchableOpacity>
             </View>
-            <View style={{ flexDirection: 'row', gap: 10 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
                 <CardNumber title="Cadastradas" value={countTask} />
-                <CardNumber title="Em aberto" value={countTask} />
-                <CardNumber title="Finalizadas" value={0} />
+                <CardNumber title="Em aberto" value={countTasksAbertas} />
+                <CardNumber title="Finalizadas" value={countTasksFinalizadas} />
             </View>
             <View style={styles.tasks}>
                 {tasks.some((t)=>!t.check) && <Text style={{color: 'white'}}>Em aberto:</Text>}
@@ -90,14 +101,13 @@ export default function Index() {
                         )
                     }
                     ListEmptyComponent={() => (
-                        <View>
-                            <Text>Você ainda não cadastrou tarefas!</Text>
-                            <Text>Crie uma tarefa para começar</Text>
+                        <View style={{marginBottom: 20}}>
+                            <Text style={{color: 'white'}}>Você ainda não cadastrou tarefas!</Text>
+                            <Text style={{color: 'white'}}>Crie uma tarefa para começar</Text>
                         </View>
                     )}
                 />
-                {tasks.some((t)=>t.check) && <Text style={{color: 'white'}}>Finalizadas:</Text>}
-                
+                {tasks.some((t)=>t.check) && <Text style={{color: 'white'}}>Finalizadas:</Text>}                
                 <FlatList
                     style={styles.listaTarefas}
                     scrollEnabled={true}               
