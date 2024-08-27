@@ -54,7 +54,17 @@ export default function Index() {
     }
 
     function deleteTarefa(texto: string) {
-        setTasks(tasks.filter((t) => t.description !== texto));
+        Alert.alert("Atenção!", `Deseja realmente remover a tarefa ${texto}?`, [
+            {
+                text: "Sim",
+                onPress: () => {setTasks(tasks.filter((t) => t.description !== texto));}
+            },
+            {
+                text: "Cancelar",
+                style: "cancel"
+            }
+        ]);
+        
     }
         
     useEffect(() => {
@@ -79,9 +89,9 @@ export default function Index() {
                 </TouchableOpacity>
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                <CardNumber title="Cadastradas" value={countTask} />
-                <CardNumber title="Em aberto" value={countTasksAbertas} />
-                <CardNumber title="Finalizadas" value={countTasksFinalizadas} />
+                <CardNumber title="Cadastradas" value={countTask} color="#1E1E1E" />
+                <CardNumber title="Em aberto" value={countTasksAbertas} color="#E88A1A" />
+                <CardNumber title="Finalizadas" value={countTasksFinalizadas} color="#0E9577" />
             </View>
             <View style={styles.tasks}>
                 {tasks.some((t)=>!t.check) && <Text style={{color: 'white'}}>Em aberto:</Text>}
